@@ -1,0 +1,36 @@
+# Ignore Python and IDE caches
+__pycache__/
+*.pyc
+.vscode
+
+# Ignore Ramulator2 build files
+build/
+ext/
+ramulator2
+*.so
+
+# Only keep cpu traces locally
+cputraces/
+cputraces.tar.gz
+
+# Ignore intermediate run scripts
+run_scripts/
+rerun_scripts/
+run_personal.sh
+run_slurm.sh
+run.sh
+
+# Ignore intermediate container image (slurm copies this to compute nodes)
+chronus_artifact.tar
+
+# Ignore everything in ae_results/
+ae_results/*
+# Do not ignore directories within ae_results/
+!ae_results/*/
+# Ignore everything in subdirectories of ae_results/
+ae_results/*/*
+!ae_results/_plots/*
+# Do not ignore _csvs and _plots directories
+!ae_results/*/_csvs/
+# Ensure files inside _csvs and _plots are included
+!ae_results/*/_csvs/**
