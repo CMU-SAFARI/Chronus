@@ -24,8 +24,8 @@ MEM_HIST_PREC = 5
 # Number of instructions the slowest core must execute before the simulation ends
 NUM_EXPECTED_INSTS = 100_000_000
 
-# Number of cycles the simulation should run
-NUM_MAX_CYCLES = 100_000_000
+# Maximum number of cycles the simulation is allowed to run (no simulation reaches 10B cycles unless there is a bug)
+NUM_MAX_CYCLES = 10_000_000_000
 
 CONTROLLER = "BHDRAMController"
 SCHEDULER = "BHScheduler"

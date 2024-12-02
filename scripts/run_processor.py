@@ -53,10 +53,8 @@ def process_results(csv_dir, trace_path, num_cores):
     mc_df["total_energy"] = mc_df["total_energy"] * 100_000_000 / mc_df["min_insn"]
 
     # Normalize the metrics to baseline for each configuration
-    cache_only = False
-    base_df = mc_df[(mc_df.mitigation == "Dummy") & (mc_df.cache_only == cache_only)].copy()
+    base_df = mc_df[(mc_df.mitigation == "Dummy")].copy()
     base_df = base_df[["trace", "weighted_speedup", "harmonic_speedup", "max_slowdown", "total_energy"]]
-    mc_df = mc_df[mc_df.cache_only == False]
     merged_df = mc_df.merge(base_df, on=["trace"], how="left", suffixes=("", "_base"))
 
     for metric in ["weighted_speedup", "harmonic_speedup", "max_slowdown"]:

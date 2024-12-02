@@ -83,21 +83,6 @@ def check_runs(work_dir, result_dir, csv_dir, trace_name_list, num_cores, name_p
             done += 1
             if not parse_results:
                 continue
-            for i in range(num_cores):
-                mem_hist = mem_parser.get_mem_hist(f"{mem_latency_file}.core{i}")
-                if len(mem_hist) == 0:
-                    for pN in range(101):
-                        mem_df.iloc[mem_df_index] = item + [trace_name, i, pN, 0]
-                        mem_df_index += 1
-                    continue
-                _, total_reqs = mem_hist[-1]
-                n_percentile = 0
-                pN_step = total_reqs / 100
-                for bucket, running_sum in mem_hist:
-                    while running_sum >= (pN_step * n_percentile):
-                        mem_df.iloc[mem_df_index] = item + [trace_name, i, n_percentile, bucket + MEM_HIST_PREC - 1]
-                        n_percentile += 1
-                        mem_df_index += 1
             num_commands = parser.parse_command_count(cmd_count_file)
             item += [trace_name]
             item += [parser.metric_ipc(core_stat[core_id]) for core_id in range(num_cores)]

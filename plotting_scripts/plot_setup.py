@@ -84,21 +84,19 @@ def general_df_setup(csv_dir, trace_dir, trace_comb_file, num_cores):
         df["MPKI"] += df[f"MPKI_core{i}"]
     df = df.apply(lambda row: label_touch(row), axis=1)
 
-    df["mitigation"] = df["mitigation"].replace({"Dummy": "No Mitigation", "TWiCe-Ideal": "TWiCe"})
-    base_df = df[df.thresh_type == "NONE"]
-    bh_df = df[df.thresh_type == "MEAN"]
-    merg_df = bh_df.merge(base_df, on=["mitigation", "tRH", "trace"], how="left", suffixes=('', '_merg'))
-    merg_df["norm_bh_speedup"] = merg_df["norm_weighted_speedup"] / merg_df["norm_weighted_speedup_merg"]
-    merg_df["norm_bh_energy"] = merg_df["norm_energy"] / merg_df["norm_energy_merg"]
-    base_df["norm_bh_speedup"] = 1
-    base_df["norm_bh_energy"] = 1
+    df["mitigation"] = df["mitigation"].replace({
+        "Dummy": "No Mitigation",
+        "RFM": "PRFM",
+        "PRAC-RFM": "PRAC+PRFM",
+    })
+    base_df = df[df.mitigation == "Dummy"]
+    merg_df = df.merge(base_df, on=["mitigation", "tRH", "trace"], how="left", suffixes=('', '_merg'))
     base_df["norm_max_slowdown"] = 1
     merg_df["norm_max_slowdown"] = merg_df["max_slowdown"] / merg_df["max_slowdown_merg"]
     merg_df = merg_df[merg_df.columns.drop(list(merg_df.filter(regex='_merg')))]
     df = pd.concat([base_df, merg_df], ignore_index=True)
 
-    df["thresh_type"] = df["thresh_type"].replace({"NONE": "", "MEAN": f"+BH"})
-    df["configstr"] = df["mitigation"] + df["thresh_type"]
+    df["configstr"] = df["mitigation"]
 
     df[core_list + ["label", "MPKI"]].sort_values(by=["MPKI"], ascending=[False])
 
@@ -112,15 +110,13 @@ def general_df_setup(csv_dir, trace_dir, trace_comb_file, num_cores):
             'configstr': configstr,
             'tRH': tRH,
             'norm_weighted_speedup': gmean(subdf["norm_weighted_speedup"]),
-            'norm_bh_speedup': gmean(subdf["norm_bh_speedup"]),
             "norm_energy": gmean(subdf["norm_energy"]),
-            "norm_bh_energy": gmean(subdf["norm_bh_energy"])
         })
 
     gdf = pd.DataFrame(gmeans)
 
-    df = pd.concat([df[['label', 'configstr', 'tRH', 'MPKI', 'norm_weighted_speedup', "norm_bh_speedup", "norm_energy", "norm_bh_energy", "norm_max_slowdown"]], gdf], ignore_index=True)
-    df = df[["label", "norm_weighted_speedup", "norm_bh_speedup", "configstr", "norm_energy", "norm_bh_energy", "norm_max_slowdown", "tRH"]].groupby(["label", "configstr","tRH"]).mean().reset_index()
+    df = pd.concat([df[['label', 'configstr', 'tRH', 'MPKI', 'norm_weighted_speedup', "norm_energy", "norm_max_slowdown"]], gdf], ignore_index=True)
+    df = df[["label", "norm_weighted_speedup", "configstr", "norm_energy", "norm_max_slowdown", "tRH"]].groupby(["label", "configstr","tRH"]).mean().reset_index()
     df["itRH"] = 1 / df["tRH"]
 
     return df
