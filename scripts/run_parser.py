@@ -84,6 +84,7 @@ def check_runs(work_dir, result_dir, csv_dir, trace_name_list, num_cores, name_p
             if not parse_results:
                 continue
             num_commands = parser.parse_command_count(cmd_count_file)
+            print(result_file)
             item += [trace_name]
             item += [parser.metric_ipc(core_stat[core_id]) for core_id in range(num_cores)]
             item += [num_commands["VRR"], global_stat["RFM"], global_stat["RRS_reswap"],\

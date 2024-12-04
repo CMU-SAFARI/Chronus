@@ -30,7 +30,7 @@ NUM_MAX_CYCLES = 10_000_000_000
 CONTROLLER = "BHDRAMController"
 SCHEDULER = "BHScheduler"
 RFMMANAGER = 2
-COLUMN_CAP = 16
+COLUMN_CAP = 4
 TREFI_TRR_RATE = 2
 
 mitigation_list = []
@@ -59,9 +59,6 @@ PARAM_STR_LIST = [
 def get_multicore_params_list():
     params = list(itertools.product(*params_list))
     params.append(("Dummy", 0))
-    for mitigation in mitigation_list:
-        for tRH in tRH_list:
-            params.append((mitigation, tRH))
     return params
 
 def get_singlecore_params_list():
