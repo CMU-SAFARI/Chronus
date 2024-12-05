@@ -84,7 +84,6 @@ def check_runs(work_dir, result_dir, csv_dir, trace_name_list, num_cores, name_p
             if not parse_results:
                 continue
             num_commands = parser.parse_command_count(cmd_count_file)
-            print(result_file)
             item += [trace_name]
             item += [parser.metric_ipc(core_stat[core_id]) for core_id in range(num_cores)]
             item += [num_commands["VRR"], global_stat["RFM"], global_stat["RRS_reswap"],\
@@ -116,9 +115,9 @@ def parse_runs(work_dir, result_dir, csv_dir, trace_path, num_cores, parse_resul
     mix_name = trace_path[trace_path.rindex("/")+1:trace_path.rindex(".mix")]
     action_str = "Parsing" if parse_results else "Checking"
     caution_str = " (This might take a while, e.g., >5 mins)" if parse_results else ""
-    print(f"[INFO] {action_str} {mix_name} multicore runs{caution_str}")
+    print(f"[INFO] {action_str} {mix_name} mechanism runs{caution_str}")
     check_runs(work_dir, result_dir, csv_dir, multicore_trace_list, num_cores, "multicore", mix_name, parse_results)
-    print(f"[INFO] {action_str} {mix_name} singlecore runs")
+    print(f"[INFO] {action_str} {mix_name} alone runs")
     check_runs(work_dir, result_dir, csv_dir, singlecore_trace_list, 1, "singlecore", mix_name, parse_results)
 
 if __name__ == "__main__":

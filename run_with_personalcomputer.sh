@@ -1,6 +1,17 @@
 #! /bin/bash
 
-echo "[INFO] Generating Ramulator2 configurations and run scripts for workloads (This might take a while, e.g., >3 mins)"
+echo "[INFO] Generating Ramulator2 configurations and run scripts for single-core workloads (This might take a while, e.g., >3 mins)"
+python3 setup_personalcomputer.py \
+    --working_directory "$PWD" \
+    --base_config "$PWD/base_config.yaml" \
+    --trace_combination "$PWD/mixes/hpcasingle.mix" \
+    --trace_directory "$PWD/cputraces" \
+    --result_directory "$PWD/ae_results/hpcasingle"
+
+echo "[INFO] Starting Ramulator2 simulations"
+python3 execute_run_script.py
+
+echo "[INFO] Generating Ramulator2 configurations and run scripts for multi-core workloads (This might take a while, e.g., >3 mins)"
 python3 setup_personalcomputer.py \
     --working_directory "$PWD" \
     --base_config "$PWD/base_config.yaml" \

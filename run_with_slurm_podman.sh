@@ -7,7 +7,19 @@ fi
 
 AE_SLURM_PART_NAME="cpu_part"
 
-echo "[INFO] Generating Ramulator2 configurations and run scripts for workloads"
+echo "[INFO] Generating Ramulator2 configurations and run scripts for single-core workloads"
+podman run --rm -v $PWD:/app chronus_artifact "python3 setup_slurm_podman.py \
+    --working_directory $PWD \
+    --base_config /app/base_config.yaml \
+    --trace_combination /app/mixes/hpcasingle.mix \
+    --trace_directory /app/cputraces \
+    --result_directory /app/ae_results/hpcasingle \
+    --partition_name $AE_SLURM_PART_NAME"
+
+echo "[INFO] Starting Ramulator2 simulations"
+python3 execute_run_script.py --slurm
+
+echo "[INFO] Generating Ramulator2 configurations and run scripts for multi-core workloads"
 podman run --rm -v $PWD:/app chronus_artifact "python3 setup_slurm_podman.py \
     --working_directory $PWD \
     --base_config /app/base_config.yaml \
