@@ -72,7 +72,7 @@ def plot(df):
         mit_trh = nrh_grp_lookup[mit_grp]
         bar_idx += 1
         if mit_name == "PRAC-1" and mit_trh == 32:
-            ax.annotate("not\nsafe", (bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() + 0.03), xytext=(0, 37),\
+            ax.annotate("not\nsafe", (bar.get_x() + bar.get_width() / 2, bar.get_y() + bar.get_height() + 0.03), xytext=(0, 39),\
                 arrowprops=dict(color='red', shrink=0.05, width=1, headwidth=3, headlength=3),\
                 textcoords='offset points', ha='center', va='bottom', fontsize=10, color='red')
             bar.set_edgecolor('red')

@@ -155,7 +155,7 @@ def get_prac_parameters(tRH, ABO_refs=4):
 
 def get_pracrfm_parameters(tRH):
     aboth = get_prac_parameters(tRH)
-    rfmth = int(min(75, aboth // 2))
+    rfmth = 75
     return aboth, rfmth
 
 if __name__ == "__main__":
