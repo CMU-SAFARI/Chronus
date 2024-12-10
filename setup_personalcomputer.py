@@ -56,7 +56,7 @@ with open(TRACE_COMBINATION_FILE, "r") as f:
         TRACE_COMBS[trace_name] = traces
         TRACE_TYPES[trace_name] = trace_type
 
-for mitigation in mitigation_list + ["Dummy", "BlockHammer"]:
+for mitigation in mitigation_list + ["Dummy"]:
     for path in [
             f"{RESULT_DIR}/{mitigation}/stats",
             f"{RESULT_DIR}/{mitigation}/configs",
