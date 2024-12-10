@@ -5,7 +5,8 @@
 +-- ae_results/                     # Simulation results and plots (will be overwritten when new experiments are executed)
 +-- cputraces/                      # CPU traces for 56 single-core workloads
 +-- mixes/                          # Workload mixes
-|   +-- hhpcabenign.mix/            # 60 bening-only workloads
+|   +-- hpcasingle.mix/             # 58 single-core workloads
+|   +-- hpcabenign.mix/             # 60 multi-core workloads
 +-- plotting_scripts/               # Scripts to use extracted simulation statistics and create the plots in our paper
 +-- scripts/                        # Scripts to post-process raw data and extract statistics for plotting
 +-- src/                            # Ramulator2 source code
