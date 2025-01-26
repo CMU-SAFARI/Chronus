@@ -6,7 +6,7 @@ from plot_setup import *
 
 MAIN_PERF = "norm_weighted_speedup"
 NUM_CORES = 4
-MITIGATION_LIST = ["Chronus", "Chronus+PB", "Graphene", "Hydra", "PRFM", "PRAC-4", "PARA"]
+MITIGATION_LIST = ["Chronus", "Chronus-PB", "PRAC-4", "Graphene", "Hydra", "PRFM", "PARA"]
 
 TRACE_COMBINATION_NAME = "hpcabenign"
 TRACE_COMBINATION_FILE = f"{TRACE_COMBINATION_DIR}/{TRACE_COMBINATION_NAME}.mix"
@@ -33,6 +33,7 @@ def plot(df):
         data=plot_df,
         ax=ax, 
         palette="pastel",
+        ci=68,
         linewidth=0.5,
         capsize=0.1,
         errwidth=0.5,
@@ -48,7 +49,9 @@ def plot(df):
     ax.set_xlabel('RowHammer Threshold ($N_{RH}$)', fontsize=10)
     handles, labels = ax.get_legend_handles_labels()
     new_labels = [label if label != 'PRAC-Ideal' else 'PRAC-Optimistic' for label in labels]
-    ax.legend(handles=handles, labels=new_labels, loc='center',  ncol=4, fancybox=True, shadow=False,
+    num_columns = 4
+    reorder = lambda l, nc: sum((l[i::nc] for i in range(nc)), [])
+    ax.legend(handles=reorder(handles, num_columns), labels=reorder(new_labels, num_columns), loc='center',  ncol=num_columns, fancybox=True, shadow=False,
               handletextpad=0.5, columnspacing=0.75, bbox_to_anchor=(0.50, 1.25), fontsize=10)
     ax.set_yticks([0, 2, 4, 6, 8, 10])
     ax.set_yticks([1, 3, 5, 7, 9], minor=True)

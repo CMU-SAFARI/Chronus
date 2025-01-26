@@ -4,7 +4,7 @@ import warnings
 import pandas as pd
 import colorsys
 from pandas.errors import SettingWithCopyWarning
-from scipy.stats import gmean
+from scipy.stats import gmean, sem
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
@@ -88,6 +88,8 @@ def general_df_setup(csv_dir, trace_dir, trace_comb_file, num_cores):
         "Dummy": "No Mitigation",
         "RFM": "PRFM",
         "PRAC-RFM": "PRAC+PRFM",
+        "PRAC-Ideal": "Chronus-PB",
+        "Chronus+PB": "Chronus-PB",
     })
     base_df = df[df.mitigation == "Dummy"]
     merg_df = df.merge(base_df, on=["mitigation", "tRH", "trace"], how="left", suffixes=('', '_merg'))
@@ -105,7 +107,7 @@ def general_df_setup(csv_dir, trace_dir, trace_comb_file, num_cores):
     gmeans = []
     for (configstr, tRH), subdf in df.groupby(['configstr', 'tRH']):
         gmeans.append({
-            'label': 'geomean',
+            'label': f'geomean\n({len(subdf["norm_weighted_speedup"])})',
             'MPKI': subdf.MPKI.mean(),
             'configstr': configstr,
             'tRH': tRH,
@@ -116,11 +118,11 @@ def general_df_setup(csv_dir, trace_dir, trace_comb_file, num_cores):
     gdf = pd.DataFrame(gmeans)
 
     df = pd.concat([df[['label', 'configstr', 'tRH', 'MPKI', 'norm_weighted_speedup', "norm_energy", "norm_max_slowdown"]], gdf], ignore_index=True)
-    df = df[["label", "norm_weighted_speedup", "configstr", "norm_energy", "norm_max_slowdown", "tRH"]].groupby(["label", "configstr","tRH"]).mean().reset_index()
+    # df = df[["label", "norm_weighted_speedup", "norm_weighted_speedup_sem", "configstr", "norm_energy", "norm_max_slowdown", "tRH"]].groupby(["label", "configstr","tRH"]).mean().reset_index()
     df["itRH"] = 1 / df["tRH"]
 
-    correct = df[(df.configstr == "Chronus+PB") & (df.tRH == 256)]
-    df = df[(df.configstr != "Chronus+PB") | (df.tRH <= 256)]
+    correct = df[(df.configstr == "Chronus-PB") & (df.tRH == 256)]
+    df = df[(df.configstr != "Chronus-PB") | (df.tRH <= 256)]
     for tRH in [512, 1024]:
         correct["tRH"] = tRH
         df = pd.concat([df, correct], ignore_index=True)

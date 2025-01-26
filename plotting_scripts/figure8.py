@@ -6,7 +6,7 @@ from plot_setup import *
 
 MAIN_PERF = "norm_weighted_speedup"
 NUM_CORES = 4
-MITIGATION_LIST = ["Chronus", "Chronus+PB", "Graphene", "Hydra", "PRFM", "PRAC-4", "PARA"]
+MITIGATION_LIST = ["Chronus", "Chronus-PB", "PRAC-4", "Graphene", "Hydra", "PRFM", "PARA"]
 
 TRACE_COMBINATION_NAME = "hpcabenign"
 TRACE_COMBINATION_FILE = f"{TRACE_COMBINATION_DIR}/{TRACE_COMBINATION_NAME}.mix"
@@ -33,6 +33,7 @@ def plot(df):
         data=plot_df,
         ax=ax, 
         palette="pastel",
+        ci=68,
         linewidth=0.5,
         capsize=0.1,
         errwidth=0.5,
@@ -82,7 +83,9 @@ def plot(df):
             bar.set_linewidth(1)
             bar.set_zorder(5)
 
-    ax.legend(handles=handles, labels=labels, loc='center', ncol=4, fancybox=True, shadow=False,
+    num_columns = 4
+    reorder = lambda l, nc: sum((l[i::nc] for i in range(nc)), [])
+    ax.legend(handles=reorder(handles, num_columns), labels=reorder(labels, num_columns), loc='center', ncol=num_columns, fancybox=True, shadow=False,
             handletextpad=0.35, columnspacing=0.45, bbox_to_anchor=(0.5, 1.25), fontsize=10)
 
     fig.savefig(f'{PLOT_DIR}/figure8.pdf', bbox_inches='tight')

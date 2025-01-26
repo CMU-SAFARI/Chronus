@@ -9,4 +9,4 @@ python3 plotting_scripts/figure$1.py \
     --trace_directory "$PWD/cputraces" \
     --result_directory "$PWD/ae_results/"
 
-echo "[INFO] Figure$1 generated to '$PWD/plots/figure$1.pdf'"
+echo "[INFO] Figure$1 generated to '$PWD/ae_results/_plots/figure$1.pdf'"

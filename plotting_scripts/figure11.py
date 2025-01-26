@@ -58,7 +58,7 @@ def plot():
 
     ax.set_axisbelow(True)
 
-    spec_mits = [("Graphene", get_graphene_bits), ("PRAC", get_prac_bits),\
+    spec_mits = [("Graphene", get_graphene_bits), ("PRAC-4", get_prac_bits),\
                 ("PRFM", get_rfm_bits), ("PRAC+PRFM", lambda x: get_prac_bits(x)),\
                 ("Hydra", get_hydra_dram_bits), ("Chronus", get_chronus_bits)]
 
@@ -70,9 +70,9 @@ def plot():
 
     storage_df["itRH"] = 1 / storage_df["tRH"]
 
-    hue_order = ["Chronus", "Graphene", "Hydra", "PRAC", "PRFM"]
+    hue_order = ["Chronus", "PRAC-4", "Graphene", "Hydra", "PRFM"]
 
-    colors = sns.color_palette("pastel", len(["Chronus", "Chronus+PB", "Graphene", "Hydra", "PRFM", "PRAC-4", "PARA"]))
+    colors = sns.color_palette("pastel", len(["Chronus", "Chronus+PB", "PRAC-4", "Graphene", "Hydra", "PRFM", "PARA"]))
     sns.barplot(
         x='itRH', 
         y='storage_overhead', 
@@ -80,7 +80,7 @@ def plot():
         hue_order=hue_order,
         data=storage_df,
         ax=ax, 
-        palette=[colors[0], colors[2], colors[3], colors[5], colors[4]],
+        palette=[colors[0], colors[2], colors[3], colors[4], colors[5]],
         linewidth=0.5,
         capsize=0.1,
         errwidth=0.5,
