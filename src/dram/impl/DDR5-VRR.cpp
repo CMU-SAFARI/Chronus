@@ -532,11 +532,17 @@ class DDR5VRR : public IDRAM, public Implementation {
       if (prac_enabled) {
         std::cout << "[Ramulator::DDR5-VRR] <PRAC ENABLED> Timings are updated automatically. " << std::endl;
         // Table 343 JEDEC 79-5C_v1.30
-        m_timing_vals("nRAS") = std::max((int) JEDEC_rounding_DDR5(16, tCK_ps), m_timing_vals("nRAS"));
-        m_timing_vals("nRP") = std::max((int) JEDEC_rounding_DDR5(36, tCK_ps), m_timing_vals("nRP"));
-        m_timing_vals("nRC") = std::max((int) JEDEC_rounding_DDR5(52, tCK_ps), m_timing_vals("nRC"));
-        m_timing_vals("nRTP") = std::max((int) JEDEC_rounding_DDR5(5, tCK_ps), m_timing_vals("nRTP"));
-        m_timing_vals("nWR") = std::max((int) JEDEC_rounding_DDR5(10, tCK_ps), m_timing_vals("nWR"));
+        m_timing_vals("nRAS") = JEDEC_rounding_DDR5(16, tCK_ps);
+        m_timing_vals("nRP") = JEDEC_rounding_DDR5(36, tCK_ps);
+        m_timing_vals("nRC") = JEDEC_rounding_DDR5(52, tCK_ps);
+        m_timing_vals("nRTP") = JEDEC_rounding_DDR5(5, tCK_ps);
+        m_timing_vals("nWR") = JEDEC_rounding_DDR5(10, tCK_ps);
+
+        std::cout << "[Ramulator::DDR5-VRR] <PRAC> nRAS: " << m_timing_vals("nRAS") << std::endl;
+        std::cout << "[Ramulator::DDR5-VRR] <PRAC> nRP: " << m_timing_vals("nRP") << std::endl;
+        std::cout << "[Ramulator::DDR5-VRR] <PRAC> nRC: " << m_timing_vals("nRC") << std::endl;
+        std::cout << "[Ramulator::DDR5-VRR] <PRAC> nRTP: " << m_timing_vals("nRTP") << std::endl;
+        std::cout << "[Ramulator::DDR5-VRR] <PRAC> nWR: " << m_timing_vals("nWR") << std::endl;
 
         // Table 347
         m_timing_vals("nRFM1") = std::max((int) ((2 * m_BRC + 1) * JEDEC_rounding_DDR5(tRRFsb_TABLE[0][density_id], tCK_ps)), m_timing_vals("nRFM1"));
