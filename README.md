@@ -1,3 +1,6 @@
+## Chronus: Understanding and Securing the Cutting-Edge Industry Solutions to DRAM Read Disturbance
+Chronus is an on-DRAM-die read disturbance mitigation mechanism that addresses the two major weaknesses of the new industry standard Per Row Activation Counting (PRAC) by eliminating counter update latency and preventing the wave attack. Described in the HPCA 2025 paper: https://arxiv.org/abs/2502.12650
+
 ## Repository File Structure 
 
 ```
