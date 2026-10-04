@@ -33,6 +33,7 @@ private:
     int m_abo_recovery_refs = -1;
     int m_abo_delay_acts = -1;
     int m_abo_thresh = -1;
+    int m_trefi_vrr_rate = -1;
 
     int m_abo_act_cycles = -1;
 
@@ -53,6 +54,7 @@ public:
         m_abo_act_ns = param<int>("abo_act_ns").default_val(180);
         m_abo_thresh = param<int>("abo_threshold").default_val(512);
         m_random_reset = param<bool>("random_reset").default_val(false);
+        m_trefi_vrr_rate = param<int>("trefi_vrr_rate").default_val(-1);
     }
 
     void setup(IFrontEnd* frontend, IMemorySystem* memory_system) override {
@@ -64,7 +66,7 @@ public:
 
         m_bank_counters.reserve(m_cfg.m_num_banks);
         for (int i = 0; i < m_cfg.m_num_banks; i++) {
-            m_bank_counters.emplace_back(i, m_cfg, m_is_abo_needed, m_abo_thresh, m_random_reset, m_debug);
+            m_bank_counters.emplace_back(i, m_cfg, m_is_abo_needed, m_abo_thresh, m_random_reset, m_trefi_vrr_rate, m_debug);
         }
 
         register_stat(s_num_recovery).name("prac_num_recovery");
@@ -191,9 +193,9 @@ public:
 private:
     class PerBankCounters {
     public: 
-        PerBankCounters(int bank_id, DeviceConfig& cfg, bool& is_abo_needed, int alert_thresh, bool random_reset, bool debug)
+        PerBankCounters(int bank_id, DeviceConfig& cfg, bool& is_abo_needed, int alert_thresh, bool random_reset, int trefi_vrr_rate, bool debug)
         : m_bank_id(bank_id), m_cfg(cfg), m_is_abo_needed(is_abo_needed),
-        m_alert_thresh(alert_thresh), m_random_reset(random_reset), m_debug(debug) {
+        m_alert_thresh(alert_thresh), m_random_reset(random_reset), m_trefi_vrr_rate(trefi_vrr_rate), m_debug(debug) {
             m_generator = std::mt19937(0x31);
             m_distribution = std::uniform_int_distribution<int>(0, alert_thresh-1);
             init_dram_params(m_cfg.m_dram);
@@ -211,12 +213,16 @@ private:
         }
 
         void init_dram_params(IDRAM* dram) {
-            CommandHandler handlers[] = {
+            std::vector<CommandHandler> handlers = {
                 // TODO: We should process PREs? Doesn't really change the results though.
                 {std::string("ACT"), std::bind(&PerBankCounters::process_act, this, std::placeholders::_1)},
                 {std::string("RFMab"), std::bind(&PerBankCounters::process_rfm, this, std::placeholders::_1)},
                 {std::string("RFMsb"), std::bind(&PerBankCounters::process_rfm, this, std::placeholders::_1)}
             };
+            if (m_trefi_vrr_rate >= 0) {
+                handlers.push_back({std::string("REFab"), std::bind(&PerBankCounters::process_ref, this, std::placeholders::_1)});
+                handlers.push_back({std::string("REFsb"), std::bind(&PerBankCounters::process_ref, this, std::placeholders::_1)});
+            }
             for (auto& h : handlers) {
                 if (!dram->m_commands.contains(h.cmd_name)) {
                     std::cout << "[PRAC] Command " << h.cmd_name << "does not exist." << std::endl;
@@ -253,6 +259,8 @@ private:
 
         int m_alert_thresh = -1;
         bool m_random_reset = false;
+        int m_trefi_vrr_rate = -1;
+        int m_trefi_ctr = -1;
         bool m_debug = false;
         int m_bank_id = -1;
 
@@ -293,6 +301,18 @@ private:
             }
             m_counters[act_max->first] = init_counter_value();
             m_critical_rows.erase(act_max->first);
+        }
+
+        void process_ref(const Request& req) {
+            m_trefi_ctr++;
+            if (m_trefi_vrr_rate < 0 || m_trefi_ctr < m_trefi_vrr_rate) {
+                return;
+            }
+            if (m_debug) {
+                std::printf("[PRAC] [%d] [REF] Borrowing time for victim refresh\n", m_bank_id);
+            }
+            m_trefi_ctr = 0;
+            process_rfm(req);
         }
     };  // class PerBankCounters
 

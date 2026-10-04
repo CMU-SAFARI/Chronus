@@ -195,6 +195,7 @@ def add_mitigation(config, mitigation, tRH):
         config["MemorySystem"][CONTROLLER]["plugins"].append({
             "ControllerPlugin" : {
                 "impl": "PRAC",
+                "trefi_vrr_rate": TREFI_TRR_RATE,
                 "abo_threshold": abo_threshold,
                 "abo_delay_acts": 4,
                 "abo_recovery_refs": 4
@@ -220,7 +221,7 @@ def add_mitigation(config, mitigation, tRH):
         config["MemorySystem"][CONTROLLER]["plugins"].append({
             "ControllerPlugin" : {
                 "impl": "PRAC",
-                "trevi_vrr_rate": TREFI_TRR_RATE,
+                "trefi_vrr_rate": TREFI_TRR_RATE,
                 "abo_threshold": abo_threshold,
                 "abo_delay_acts": 1,
                 "abo_recovery_refs": 1,
@@ -233,7 +234,7 @@ def add_mitigation(config, mitigation, tRH):
         config["MemorySystem"][CONTROLLER]["plugins"].append({
             "ControllerPlugin" : {
                 "impl": "PRAC",
-                "trevi_vrr_rate": TREFI_TRR_RATE,
+                "trefi_vrr_rate": TREFI_TRR_RATE,
                 "abo_threshold": abo_threshold,
                 "abo_delay_acts": 4,
                 "abo_recovery_refs": 4,
@@ -252,7 +253,7 @@ def add_mitigation(config, mitigation, tRH):
         config["MemorySystem"][CONTROLLER]["plugins"].append({
             "ControllerPlugin" : {
                 "impl": "Chronus",
-                "trevi_vrr_rate": TREFI_TRR_RATE,
+                "trefi_vrr_rate": TREFI_TRR_RATE,
                 "abo_threshold": tRH - 4
         }})
     elif mitigation == "Chronus+PB":
@@ -265,7 +266,7 @@ def add_mitigation(config, mitigation, tRH):
         config["MemorySystem"][CONTROLLER]["plugins"].append({
             "ControllerPlugin" : {
                 "impl": "PRAC",
-                "trevi_vrr_rate": TREFI_TRR_RATE,
+                "trefi_vrr_rate": TREFI_TRR_RATE,
                 "abo_threshold": abo_threshold,
                 "abo_delay_acts": 4,
                 "abo_recovery_refs": 4
